@@ -30,7 +30,3 @@
 .nav-list-item  {
     float: left;
 }
-
-.content-item.content-item-highlight {
-    background: linear-gradient(to right,#96E072,#3DA35D,#3E8914,#134611);
-}
