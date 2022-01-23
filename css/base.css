@@ -1,3 +1,8 @@
+body,
+html {
+    background: #071b28 !important;
+}
+
 .nav-container-offset {
     left: 0px;
     right: 0px;

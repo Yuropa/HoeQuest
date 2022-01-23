@@ -1,7 +1,24 @@
-{
+{    
+    "title": "Hoe Quest!",
+    "description" : "Welcome to Hoe Quest! My name is Josh. Begin your adventure below.",
+    "color-start" : "#ffffff",
+    "color-end" : "#ffffff",
     "items" : [
         {
-            "text" : "Welcome to Hoe Quest!"
+            "text" : "Begin your Adventure!",
+            "link" : "quest.html",
+            "color-start" : "rgb(112, 112, 112)",
+            "color-end" : "rgb(164, 164, 164)"
+        },
+        {
+            "photo" : "images/me_1.photo"
+        },
+        {
+            "photo" : "images/me_2.photo"
+        },
+        {
+            "photo" : "images/me_3.photo"
         }
     ]
+
 }
