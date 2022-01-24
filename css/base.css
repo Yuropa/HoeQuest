@@ -1,8 +1,3 @@
-body,
-html {
-    background: #071b28 !important;
-}
-
 .nav-container-offset {
     left: 0px;
     right: 0px;
@@ -34,4 +29,50 @@ html {
 
 .nav-list-item  {
     float: left;
+}
+
+.pulse-animation {
+	animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+	0% {
+		opacity: 0.0;
+	}
+
+	40% {
+		opacity: 1.0;
+	}
+    
+	60% {
+		opacity: 1.0;
+	}
+    
+	100% {
+		opacity: 0.0;
+	}
+}
+
+.start-button {
+    border: 2px solid #C16D82;
+    color: #C16D82;
+    border-radius: 10px;
+    padding-right: 15px;
+    padding-left: 15px;
+    padding-top: 9px;
+    padding-bottom: 9px;
+    text-align: center;
+    font-size: 30px;
+    
+    transition:  box-shadow 1s;
+    
+    position: absolute;
+    left: 50%;
+    margin-left: -61px;
+    bottom: 20%;
+}
+
+.start-button:hover {
+    cursor: pointer;
+    box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.45) ;
 }
