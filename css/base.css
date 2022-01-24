@@ -162,3 +162,8 @@
     -o-object-fit: contain;
     object-fit: contain;
 }
+
+.quest-fill-image.quest-fill-image-fill {
+    -o-object-fit: cover;
+    object-fit: cover;
+}
