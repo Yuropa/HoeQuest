@@ -70,6 +70,8 @@
     left: 50%;
     margin-left: -61px;
     bottom: 20%;
+    
+    font-family: 'Kiona', sans-serif;
 }
 
 .start-button:hover {
