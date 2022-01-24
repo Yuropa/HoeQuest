@@ -5,6 +5,7 @@
     "color-end" : "#ffffff",
     "items" : [
         {
+            "icon" : "icons/game.svg",
             "text" : "Begin your Adventure!",
             "link" : "quest.html",
             "color-start" : "rgb(112, 112, 112)",
