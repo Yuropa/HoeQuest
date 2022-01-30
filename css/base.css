@@ -1,3 +1,9 @@
+@font-face {
+    font-family: sono;
+    src: url(sono/desktop/Sono-Regular.ttf);
+}
+
+
 .nav-container-offset {
     left: 0px;
     right: 0px;
