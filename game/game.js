@@ -1,3 +1,4 @@
+
 function loadGameContent() {
     var scale = window.devicePixelRatio;
     var width = window.innerWidth * scale;
@@ -49,6 +50,24 @@ function loadGameContent() {
         game.scale.resize(width, height);
     }
     
+    function updateHouseContent(game) {
+        var old = graph.get("house-stack");
+        if (old != undefined) {
+            graph.remove(old);
+            old.first.destroy();
+            old.second.destroy();
+        }
+        
+        var img1 = game.add.image(0, 0, 'house_' + getRandomInt(10));
+        var img2 = game.add.image(0, 0, 'house_' + getRandomInt(10));
+        
+        img1.setInteractive();
+        img2.setInteractive();
+
+        var stack = new GameStack("house-stack", img1, img2);
+        graph.add(stack);
+    }
+    
     function create () {
         hideContent();
 
@@ -73,11 +92,13 @@ function loadGameContent() {
         
         // There's some hoes in this house
         
-        var img1 = this.add.image(0, 0, 'house_' + getRandomInt(10));
-        var img2 = this.add.image(0, 0, 'house_' + getRandomInt(10));
+        updateHouseContent(this);
         
-        var stack = new GameStack("house-stack", img1, img2);
-        graph.add(stack);
+        var g = this;
+        this.input.on('pointerdown', function () {
+            updateHouseContent(g);
+        });
+        
         
 //        for (let i = 0; i < 10; i++) { 
 //            var name = 'house_' + i;
