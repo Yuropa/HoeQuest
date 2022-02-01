@@ -10,7 +10,7 @@ function loadGameContent() {
     graph.resize(width, height, scale);
     
     const config = {
-        type: Phaser.AUTO,
+        type: Phaser.WEBGL,
         
         scale: {
             parent: "body-root",
@@ -28,11 +28,19 @@ function loadGameContent() {
             update: update
         }
     };
+    
+    function tint () {
+        this.setTint(0x979797);
+    }
+
+    function clearTint () {
+        this.clearTint();
+    }
 
     const game = new Phaser.Game(config);
     
     window.addEventListener('resize', () => {
-        setTimeout(resize, 500);
+        setTimeout(resize, 100);
     });
     
     function preload () {
@@ -44,12 +52,40 @@ function loadGameContent() {
     }
 
     var background;
+    var set_index = [-1, -1];
+    
+    function getRandomExcluding(value, excluding) {
+        var result = excluding;
+        
+        while(result == excluding) {
+            result = getRandomInt(value);
+        }
+        
+        return result;
+    }
     
     function resize() {
         width = window.innerWidth * scale;
         height = window.innerHeight * scale;
         graph.resize(width, height, scale);
         game.scale.resize(width, height);
+    }
+    
+    function makeHouse(game, index, houseIndex) {
+        var house = game.add.sprite(0, 0, 'house_' + houseIndex).setInteractive();
+        house.setData('house', house);
+        house.setData('index', index);
+        house.on('pointerdown', tint)
+            .on('pointerup', function() {
+            this.clearTint();
+            
+            set_index[index] = -1;
+            updateHouseContent(game);
+        })
+            .on('pointerout', clearTint);
+        set_index[index] = houseIndex;
+        
+        return house;
     }
     
     function updateHouseContent(game) {
@@ -60,21 +96,21 @@ function loadGameContent() {
             old.second.destroy();
         }
         
-        var index1 = getRandomInt(house_count);
-        var index2 = index1;
-        
-        while(index2 == index1) {
-            index2 = getRandomInt(house_count);
+        if (set_index[0] == -1) {
+            set_index[0] = getRandomExcluding(house_count, set_index[1]);
         }
         
-        var img1 = game.add.image(0, 0, 'house_' + index1);
-        var img2 = game.add.image(0, 0, 'house_' + index2);
+        if (set_index[1] == -1) {
+            set_index[1] = getRandomExcluding(house_count, set_index[0]);
+        }
         
-        img1.setInteractive();
-        img2.setInteractive();
-
+        var img1 = makeHouse(game, 0, set_index[0]);
+        var img2 = makeHouse(game, 1, set_index[1]);
+        
         var stack = new GameStack("house-stack", img1, img2, img1.width / img1.height, img2.width / img2.height);
         graph.add(stack);
+        
+        resize();
     }
     
     function create () {
@@ -82,7 +118,6 @@ function loadGameContent() {
 
         $("html").addClass('quest-fill-page');
         $("boody").addClass('quest-fill-page');
-        
         
         background = this.add.image(0, 0, 'background');
         background.setOrigin(0, 0);
@@ -99,14 +134,24 @@ function loadGameContent() {
         label2.xOffset = scale * 140.0;
         graph.add(label2);
         
+//        this.input.on('pointerdown', function (pointer, gameObject) {
+//            
+//        });
+        
         // There's some hoes in this house
         
         updateHouseContent(this);
         
-        var g = this;
-        this.input.on('pointerdown', function () {
-            updateHouseContent(g);
-        });
+//        var g = this;
+//        this.input.on('pointerdown', function (pointer, gameObjects) {
+//            var value = gameObjects[0].getData('index');
+//            if (value == undefined) {
+//                return;
+//            }
+//            
+//            set_index[value] = -1;
+//            updateHouseContent(g);
+//        });
         
         
 //        for (let i = 0; i < house_count; i++) { 
