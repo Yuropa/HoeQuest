@@ -1,4 +1,6 @@
 
+var house_count = 10;
+
 function loadGameContent() {
     var scale = window.devicePixelRatio;
     var width = window.innerWidth * scale;
@@ -36,7 +38,7 @@ function loadGameContent() {
     function preload () {
         this.load.image('background', 'background.jpg');
         
-        for (let i = 0; i < 10; i++) { 
+        for (let i = 0; i < house_count; i++) { 
             this.load.image('house_' + i, 'houses/' + (i + 1) + '.png');
         }
     }
@@ -58,13 +60,20 @@ function loadGameContent() {
             old.second.destroy();
         }
         
-        var img1 = game.add.image(0, 0, 'house_' + getRandomInt(10));
-        var img2 = game.add.image(0, 0, 'house_' + getRandomInt(10));
+        var index1 = getRandomInt(house_count);
+        var index2 = index1;
+        
+        while(index2 == index1) {
+            index2 = getRandomInt(house_count);
+        }
+        
+        var img1 = game.add.image(0, 0, 'house_' + index1);
+        var img2 = game.add.image(0, 0, 'house_' + index2);
         
         img1.setInteractive();
         img2.setInteractive();
 
-        var stack = new GameStack("house-stack", img1, img2);
+        var stack = new GameStack("house-stack", img1, img2, img1.width / img1.height, img2.width / img2.height);
         graph.add(stack);
     }
     
@@ -100,7 +109,7 @@ function loadGameContent() {
         });
         
         
-//        for (let i = 0; i < 10; i++) { 
+//        for (let i = 0; i < house_count; i++) { 
 //            var name = 'house_' + i;
 //            var x = getRandomInt(width);
 //            var y = getRandomInt(height);
