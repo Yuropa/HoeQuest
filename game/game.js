@@ -1,6 +1,41 @@
 
 var house_count = 10;
 
+function shuffle(array) {
+    let currentIndex = array.length,  randomIndex;
+
+    // While there remain elements to shuffle...
+    while (currentIndex != 0) {
+
+        // Pick a remaining element...
+        randomIndex = Math.floor(Math.random() * currentIndex);
+        currentIndex--;
+
+        // And swap it with the current element.
+        [array[currentIndex], array[randomIndex]] = [
+        array[randomIndex], array[currentIndex]];
+    }
+
+    return array;
+}
+var __index = undefined;
+var __houseIndex = 0;
+
+function randomHouse() {
+    if (__index == undefined) {
+        __index = [];
+        for (var i = 0; i < house_count; i++) {
+            __index.push(i);
+        }
+        
+        __index = shuffle(__index);
+    }
+    
+    var index = __index[__houseIndex];
+    __houseIndex = (__houseIndex + 1) % house_count;
+    return index;
+}
+
 function loadGameContent() {
     var scale = window.devicePixelRatio;
     var width = window.innerWidth * scale;
@@ -45,6 +80,7 @@ function loadGameContent() {
     
     function preload () {
         this.load.image('background', 'background.jpg');
+        this.load.image('lyrics', 'lyrics.png');
         
         for (let i = 0; i < house_count; i++) { 
             this.load.image('house_' + i, 'houses/' + (i + 1) + '.png');
@@ -58,7 +94,7 @@ function loadGameContent() {
         var result = excluding;
         
         while(result == excluding) {
-            result = getRandomInt(value);
+            result = randomHouse();
         }
         
         return result;
@@ -92,22 +128,20 @@ function loadGameContent() {
         var old = graph.get("house-stack");
         if (old != undefined) {
             graph.remove(old);
-            old.first.destroy();
-            old.second.destroy();
         }
         
         if (set_index[0] == -1) {
-            set_index[0] = getRandomExcluding(house_count, set_index[1]);
+            set_index[0] = getRandomExcluding(set_index[1]);
         }
         
         if (set_index[1] == -1) {
-            set_index[1] = getRandomExcluding(house_count, set_index[0]);
+            set_index[1] = getRandomExcluding(set_index[0]);
         }
         
         var img1 = makeHouse(game, 0, set_index[0]);
         var img2 = makeHouse(game, 1, set_index[1]);
         
-        var stack = new GameStack("house-stack", img1, img2, img1.width / img1.height, img2.width / img2.height);
+        var stack = new GameStack("house-stack", img1, img2);
         graph.add(stack);
         
         resize();
@@ -134,44 +168,24 @@ function loadGameContent() {
         label2.xOffset = scale * 140.0;
         graph.add(label2);
         
-//        this.input.on('pointerdown', function (pointer, gameObject) {
-//            
-//        });
         
-        // There's some hoes in this house
+        var lyricsSprite = this.add.sprite(0, 0, 'lyrics');
+        var lyrics = new CenterStack("lyrics", lyricsSprite);
+        graph.add(lyrics);
         
-        updateHouseContent(this);
+        var scaleAnimation = new ScaleAnimation(lyrics, 1000, -1, true, 'easeInOut');
+        graph.add(scaleAnimation);
+        scaleAnimation.start();
         
-//        var g = this;
-//        this.input.on('pointerdown', function (pointer, gameObjects) {
-//            var value = gameObjects[0].getData('index');
-//            if (value == undefined) {
-//                return;
-//            }
-//            
-//            set_index[value] = -1;
-//            updateHouseContent(g);
-//        });
-        
-        
-//        for (let i = 0; i < house_count; i++) { 
-//            var name = 'house_' + i;
-//            var x = getRandomInt(width);
-//            var y = getRandomInt(height);
-//            var angle = getRandomInt(60) - 30;
-//            
-//            var image = this.add.image(x, y, name);
-//            var src = image.texture.getSourceImage();
-//            var imageWidth = src.width;
-//            var imageHeight = src.height;
-//            
-//            var imgScale = Math.min(50.0 / imageWidth, 50.0 / imageHeight);
-//            
-//            image
-//                .setOrigin(0, 0)
-//                .setScale(scale * imgScale)
-//                .setRotation(angle * Math.PI / 180.0);
-//        }
+        var g = this;
+        setTimeout(function() {
+            scaleAnimation.stop();
+            
+            graph.remove(scaleAnimation);
+            graph.remove('lyrics');
+            
+            updateHouseContent(g);
+        }, 6000);
         
         // This shuold happen last
         graph.create(this);
