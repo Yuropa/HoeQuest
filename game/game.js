@@ -1,40 +1,32 @@
 
-var house_count = 10;
+var donut_count = 8;
 
-function shuffle(array) {
-    let currentIndex = array.length,  randomIndex;
-
-    // While there remain elements to shuffle...
-    while (currentIndex != 0) {
-
-        // Pick a remaining element...
-        randomIndex = Math.floor(Math.random() * currentIndex);
-        currentIndex--;
-
-        // And swap it with the current element.
-        [array[currentIndex], array[randomIndex]] = [
-        array[randomIndex], array[currentIndex]];
-    }
-
-    return array;
-}
-var __index = undefined;
-var __houseIndex = 0;
-
-function randomHouse() {
-    if (__index == undefined) {
-        __index = [];
-        for (var i = 0; i < house_count; i++) {
-            __index.push(i);
-        }
-        
-        __index = shuffle(__index);
+class ImageLoader {
+    count;
+    dir;
+    name;
+    generator;
+    
+    constructor(count, dir) {
+        this.count = count;
+        this.dir = dir;
+        this.name = dir;
+        this.generator = new RandomGenerator(count);
     }
     
-    var index = __index[__houseIndex];
-    __houseIndex = (__houseIndex + 1) % house_count;
-    return index;
+    preload(game) {
+        for (let i = 0; i < this.count; i++) { 
+            game.load.image(this.name + '_' + i, this.dir + '/' + (i + 1) + '.png');
+        }
+    }
+    
+    get (game, idx) {
+        return game.add.sprite(0, 0, this.name + '_' + idx).setInteractive();
+    }
 }
+
+var houseLoader = new ImageLoader(10, 'houses');
+var donutLooader = new ImageLoader(8, 'donuts');
 
 function loadGameContent() {
     var scale = window.devicePixelRatio;
@@ -82,23 +74,11 @@ function loadGameContent() {
         this.load.image('background', 'background.jpg');
         this.load.image('lyrics', 'lyrics.png');
         
-        for (let i = 0; i < house_count; i++) { 
-            this.load.image('house_' + i, 'houses/' + (i + 1) + '.png');
-        }
+        houseLoader.preload(this);
     }
 
     var background;
     var set_index = [-1, -1];
-    
-    function getRandomExcluding(value, excluding) {
-        var result = excluding;
-        
-        while(result == excluding) {
-            result = randomHouse();
-        }
-        
-        return result;
-    }
     
     function resize() {
         width = window.innerWidth * scale;
@@ -108,7 +88,7 @@ function loadGameContent() {
     }
     
     function makeHouse(game, index, houseIndex) {
-        var house = game.add.sprite(0, 0, 'house_' + houseIndex).setInteractive();
+        var house = houseLoader.get(game, houseIndex);
         house.setData('house', house);
         house.setData('index', index);
         house.on('pointerdown', tint)
@@ -131,11 +111,11 @@ function loadGameContent() {
         }
         
         if (set_index[0] == -1) {
-            set_index[0] = getRandomExcluding(set_index[1]);
+            set_index[0] = houseLoader.generator.getExcluding(set_index[1]);
         }
         
         if (set_index[1] == -1) {
-            set_index[1] = getRandomExcluding(set_index[0]);
+            set_index[1] = houseLoader.generator.getExcluding(set_index[0]);
         }
         
         var img1 = makeHouse(game, 0, set_index[0]);
