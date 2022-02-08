@@ -26,6 +26,7 @@ class GameStack extends RenderObject {
     second = undefined;
     firstAspectRatio = 1.0;
     secondAspectRatio = 1.0;
+    scale = 1.0;
 
     constructor(name, first, second, firstAspectRatio, secondAspectRatio) {
         super(name);
@@ -52,6 +53,7 @@ class GameStack extends RenderObject {
         
         padding = 0.1 * size;
         size -= padding * 2.0;
+        size *= this.scale;
         
         __updateSize(size, this.first, this.firstAspectRatio);
         __updateSize(size, this.second, this.secondAspectRatio);
